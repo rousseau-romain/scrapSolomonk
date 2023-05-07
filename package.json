@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "chromium": "^3.0.3",
+    "json-server": "^0.17.3",
+    "puppeteer": "^19.11.0"
+  },
+  "scripts": {
+    "get-data-monsters": "node ./monsters/index.js"
+  }
+}
