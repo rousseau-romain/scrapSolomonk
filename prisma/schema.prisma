@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DIRECT_URL")
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Translation {
+  id        Int         @id @unique @default(autoincrement())
+  createdAt DateTime    @default(now())
+  updateAt  DateTime    @updatedAt
+  fr        String
+  es        String?
+  eng       String?
+  pt        String?
+  Name      Monster[]   @relation("Name")
+  NameArchi Monster[]   @relation("NameArchi")
+  Race      Race[]
+  Ecosystem Ecosystem[]
+  Spell     Spell[]
+  SubArea   SubArea[]
+  Loot      Loot[]
+}
+
+model Race {
+  id            Int         @id @unique @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  idDofus       Int
+  name          Translation @relation(fields: [translationId], references: [id])
+  translationId Int
+  Monster       Monster[]
+}
+
+model Ecosystem {
+  id            Int          @id @unique @default(autoincrement())
+  createdAt     DateTime     @default(now())
+  updateAt      DateTime     @updatedAt
+  idDofus       Int
+  name          Translation? @relation(fields: [translationId], references: [id])
+  translationId Int?
+  Monster       Monster[]
+}
+
+model Spell {
+  id            Int         @id @unique @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  idDofus       Int
+  name          Translation @relation(fields: [translationId], references: [id])
+  translationId Int
+  Monster       Monster[]
+}
+
+model SubArea {
+  id            Int         @id @unique @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  idDofus       Int
+  name          Translation @relation(fields: [translationId], references: [id])
+  translationId Int
+  Monster       Monster[]
+}
+
+model Loot {
+  id            Int         @id @unique @default(autoincrement())
+  createdAt     DateTime    @default(now())
+  updateAt      DateTime    @updatedAt
+  idDofus       Int?
+  name          Translation @relation(fields: [translationId], references: [id])
+  translationId Int
+  Monster       Monster[]
+}
+
+model Monster {
+  id                 Int          @id @unique @default(autoincrement())
+  createdAt          DateTime     @default(now())
+  updateAt           DateTime     @updatedAt
+  idDofus            Int
+  idArchiDofus       Int?
+  numberOfLevel      Int
+  name               Translation  @relation("Name", fields: [translationNameId], references: [id])
+  nameArchi          Translation? @relation("NameArchi", fields: [translationNameArchiId], references: [id])
+  image              String
+  level              Int[]
+  life               Int[]
+  pa                 Int[]
+  pm                 Int[]
+  xp                 Int[]
+  init               Int[]
+  strength           Int[]
+  fire               Int[]
+  water              Int[]
+  wind               Int[]
+  dodgeAp            Int[]
+  dodgeMp            Int[]
+  resistanceNeutral  Int[]
+  resistanceStrength Int[]
+  resistanceFire     Int[]
+  resistanceWater    Int[]
+  resistanceWind     Int[]
+  ecosystem          Ecosystem    @relation(fields: [ecosystemId], references: [id])
+  spells             Spell[]
+  race               Race         @relation(fields: [raceId], references: [id])
+  subAreas           SubArea[]
+  loots              Loot[]
+
+  translationNameId      Int
+  translationNameArchiId Int?
+  ecosystemId            Int
+  raceId                 Int
+}
